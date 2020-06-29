@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>Infinity Scroll</title>
+        <script src="https://code.jquery.com/jquery-3.1.1.js"> </script>
+        <script>
+            $(document).ready(function () {
+                var appendDocument = function () {
+                    for (var i = 0; i < 20; i++) {
+                        $('<h1>Infinity Scroll</h1>').appendTo('body');
+                    }
+                };
+   
+                appendDocument();
+   
+                $(window).scroll(function () {
+                    var scrollHeight = $(window).scrollTop() + $(window).height();
+                    var documentHeight = $(document).height();
+      
+                    if (scrollHeight + 10 >= documentHeight) {
+                        appendDocument();
+                    }
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+
+    </body>
+</html>

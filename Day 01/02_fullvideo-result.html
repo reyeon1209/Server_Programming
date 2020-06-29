@@ -1,0 +1,56 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>동영상 배경</title>	
+
+		<style>
+			#container {
+				position: relative;
+				text-align: center;				
+				margin-top: 30%;
+				margin-left: 30%;
+			}
+
+			h2 {
+				font-size: 2em;
+			}
+
+			h1 {
+				font-size: 3.5em;
+			}
+
+			a:link, a:visited { 
+				text-decoration: none;
+				color: #222;
+			}
+
+			a:hover {
+				cursor: pointer;
+			}
+
+			#bg {
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: auto;
+				height: auto;
+				min-width: 100%;
+				min-height: 100%;
+				z-index: -100;
+				background: url(imgs/flame.jpg) left top no-repeat;
+				background-size: cover;
+			}
+		</style>
+	</head>
+
+	<body>
+		<video src="imgs/flame.mp4" autoplay loop muted poster="imgs/flame.jpg"></video>
+		
+		<div id="container">
+			<h2>동영상으로 홈페이지 대문 만들기 예제</h2>
+			<h1><a href="http://www.sejong.ac.kr">세종대학교</a></h1>				
+		</div>		
+	</body>
+</html>

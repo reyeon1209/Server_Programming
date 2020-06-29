@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>Masonry + Infinity Scroll</title>
+        <script src="https://code.jquery.com/jquery-3.1.1.js"> </script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            .box {
+                background: black;
+                margin: 5px;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+        <script src="https://masonry.desandro.com/masonry.pkgd.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $grid = $('body').masonry({
+                    columnWidth: 110
+                });
+                appendDocument();
+            });
+
+            var appendDocument = function(){
+                for (var i = 0; i < 100; i++) {
+                    var elem = $('<div></div>').addClass('box').css({
+                        width: 100,
+                        height: Math.floor(Math.random() * 100) + 50
+                    });
+                    $grid.append(elem).masonry('appended', elem);
+                }
+            };
+
+            $(window).scroll(function () {
+                var scrollHeight = $(window).scrollTop() + $(window).height();
+                var documentHeight = $(document).height();
+    
+                if (scrollHeight + 10 >= documentHeight) {
+                    appendDocument();
+                }
+            });  
+        </script>
+    </head>
+
+    <body>
+        
+    </body>
+
+</html>

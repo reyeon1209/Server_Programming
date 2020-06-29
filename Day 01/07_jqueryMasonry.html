@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Masonry</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            .box {
+                background: black;
+                margin: 5px;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+        <script src="https://masonry.desandro.com/masonry.pkgd.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                for (var i = 0; i < 100; i++) {
+                    $('<div></div>').addClass('box').css({
+                        width: 100,
+                        height: Math.floor(Math.random() * 100) + 50
+                    }).appendTo('body');
+                }
+               
+                $('body').masonry({
+                    columnWidth: 110
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        
+    </body>
+</html>
