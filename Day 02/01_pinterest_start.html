@@ -251,11 +251,28 @@
                 });
             });
 
+            // 라이트박스
+            function showLightBox() {
+                // 라이트박스 보이게
+                $('#darken-background').show();
+                $('#darken-background').css('top', $(window).scrollTop());
+                // 스크롤을 못하게
+                $('body').css('overflow', 'hidden');
+            }
+
+            function hideLightBox() {
+                // 라이트박스 안보이게
+                $('#darken-background').hide();
+                $('#darken-background').css('top', $(window).scrollTop());
+                // 스크롤을 하게
+                $('body').css('overflow', '');
+            }
+
             // 페이지 masonry + infinityScroll
             $(document).ready(function () {
                 // 20개 먼저 main-section에 추가
                 for (var i = 0; i < 20; i++) {
-                    var random_height = Math.floor(Math.random() * 100) + 100;
+                    var random_height = Math.floor(Math.random() * 100) + 150;
                     $(`<div class="paper">
                         <div class="paper-holder">
                             <a><img width="190" src="http://placekitten.com/190/${random_height}" /></a>
@@ -290,7 +307,7 @@
                 });
 
                 for (var i = 0; i < 20; i++) {
-                    var random_height = Math.floor(Math.random() * 100) + 100;
+                    var random_height = Math.floor(Math.random() * 100) + 150;
                     var elem = $(`<div class="paper">
                                     <div class="paper-holder">
                                         <a><img width="190" src="http://placekitten.com/190/${random_height}" /></a>
@@ -303,35 +320,28 @@
                                 </div>`);
                     $grid.append(elem).masonry('appended', elem);
                 }
+
+                // 라이트박스
+                $(document).ready(function () {
+                    // 라이트박스 제거 이벤트
+                    $('#darken-background').click(function () {
+                        hideLightBox();
+                    });
+
+                    // 클릭 이벤트 연결
+                    $('.paper').click(function () {
+                        showLightBox();
+                    });
+
+                    // 라이트박스 제거 이벤트 보조
+                    $('#lightbox').click(function (event) {
+                        event.stopPropagation();
+                    });
+                });
             };
-
-            $(window).scroll(function () {
-                var scrollHeight = $(window).scrollTop() + $(window).height();
-                var documentHeight = $(document).height();
-
-                if (scrollHeight + 10 >= documentHeight) {
-                    appendDocument();
-                }
-            });
 
             // 라이트박스
             $(document).ready(function () {
-                function showLightBox() {
-                    // 라이트박스 보이게
-                    $('#darken-background').show();
-                    $('#darken-background').css('top', $(window).scrollTop());
-                    // 스크롤을 못하게
-                    $('body').css('overflow', 'hidden');
-                }
-
-                function hideLightBox() {
-                    // 라이트박스 안보이게
-                    $('#darken-background').hide();
-                    $('#darken-background').css('top', $(window).scrollTop());
-                    // 스크롤을 하게
-                    $('body').css('overflow', '');
-                }
-
                 // 라이트박스 제거 이벤트
                 $('#darken-background').click(function () {
                     hideLightBox();
@@ -347,6 +357,15 @@
                     event.stopPropagation();
                 });
             });
+
+            $(window).scroll(function () {
+                var scrollHeight = $(window).scrollTop() + $(window).height();
+                var documentHeight = $(document).height();
+
+                if (scrollHeight + 10 >= documentHeight) {
+                    appendDocument();
+                }
+            });          
         </script> 
     </head> 
 
