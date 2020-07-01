@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>Get JSON</title>
+        <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+        <script>
+            $(document).ready(function(){
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    
+                    if(this.readyState == 4 && this.status == 200) {
+                        var myObj = JSON.parse(this.responseText);
+                        $('#content ul').append("<li>" + myObj.cod + "</li>");
+                        $('#content ul').append("<li>" + myObj.message + "</li>");
+                        $('#content ul').append("<li>" + myObj.cnt + "</li>");
+                        $('#content ul').append("<li>" + myObj.list + "</li>");
+
+                        $('#content ul').append("<li></li>");
+
+                        var listObj = myObj.list;
+                        $.each(listObj, function(i, result) {
+                            $('#content ul').append("<li>index = " + i + "</li>");
+                            $('#content ul').append("<li>" + result.dt + "</li>");
+                            $('#content ul').append("<li>" + result.main + "</li>");
+                            $('#content ul').append("<li></li>");
+
+                            var mainObj = result.main;
+                            $.each(mainObj, function(j, r) {
+                                $('#content ul').append("<li>" + r + "</li>");
+                            });
+                            $('#content ul').append("<li></li>");
+                        });
+                    }
+                };
+                xmlhttp.open("GET","http://api.openweathermap.org/data/2.5/forecast?id=1853909&APPID=2b738975dae95d234aaccf0654cfb6f4");
+                xmlhttp.send();
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div id="content">
+            <ul></ul>
+        </div>
+    </body>
+</html>

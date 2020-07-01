@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>지역별 날씨</title>
+        <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+        <script>
+            // city 이름 찾아서 select option에 추가
+            $(document).ready(function() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var result = this.responseText;
+                        var city = $(result).find("city");
+                        
+                        $.each(city, function(i, result) {
+                            $('#city').append("<option>" + result.textContent + "</option>");
+                        });
+                    }
+                }; 
+                xmlhttp.open("GET","https://www.weather.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=108");
+                xmlhttp.send();
+            });
+
+            // city를 선택하면 실행할 함수
+            function selectCity() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        $("#content").empty();  // 이전 내용 지우기
+ 
+                        // 선택한 city 이름
+                        var selected = document.getElementById("city");
+                        var cityName = selected.options[selected.selectedIndex].value;
+
+                        var result = this.responseText;
+                        // 선택한 city 데이터 찾아서 넣기
+                        $(result).find('location').each(function() {
+                            var city = $(this).find("city").text();
+                            if (city == cityName) {
+                                $(this).find('data').each(function() {
+                                    var content = $(this).find('tmEf').text() + ' ' + $(this).find('wf').text() + ' '
+                                    + $(this).find('tmx').text() + ' ' + $(this).find('tmn').text() + ' ';
+                                    $('#content').append('<p>' + content + '</p>');
+                                });
+                            }
+                        })
+                    }
+                };
+                xmlhttp.open("GET","https://www.weather.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=108");
+                xmlhttp.send();
+            }
+        </script>
+
+        <style>
+            select {
+                display: block;
+                margin: 0 auto;
+                padding: 5px;
+                border: 0;
+                border-bottom: 2px solid #8E44AD;
+                font-size: 15px;
+                width: 300px;
+                padding: .8em .5em;
+                font-size: 20px;
+                background: url("imgs/down_arrow.png") no-repeat 95% 50%;
+                border-radius: 0px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            div { 
+                margin-left: 15px;
+                font-size: large;
+                }
+            h2 { text-align: center; margin: 2%; }
+            p { text-align: center; margin: 1%; }
+        </style>
+    </head>
+
+    <body>
+        <h2>지역별 주간 날씨 정보</h2>
+
+        <select id="city" onchange="selectCity()">
+            <option selected disabled hidden>도시 선택</option>
+            
+        </select>
+
+        <div id="content"></div>
+    </body>
+</html>

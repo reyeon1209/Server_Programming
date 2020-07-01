@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Get HTML</title>
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script>
+            $.ajax({
+                type: "get",
+                url: "http://m.sejong.ac.kr/front/cafeteria2.do",
+                dataType: "html",
+                success: function(result) {
+                    document.body.innerHTML = result;
+                }
+            });
+        </script>
+    </head>
+
+    <body>
+        
+    </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>한국 관광 정보</title>
+        <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+        <script>
+            // option을 선택하면 실행할 함수
+            function selectOption() {
+                // 선택한 type, area 이름
+                var selectedType = document.getElementById("type");
+                var typeId = selectedType.options[selectedType.selectedIndex].value;
+                var selectedArea = document.getElementById("area");
+                var areaId = selectedArea.options[selectedArea.selectedIndex].value;
+                // 인증키
+                var serviceKey = "bq6YPTFfpPwcqBSmOZ55XgiOpoXd3yc7ScFpY%2FFIZDZ6j%2BqccWjvzOdHrX%2BBLHCK%2BCizOJgIxisZS0pqFebAgQ%3D%3D";
+                var url = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="
+                + serviceKey + "&contentTypeId=" + typeId + "&areaCode=" + areaId
+                + "&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=12&pageNo=1";
+
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        $("#content").empty();  // 이전 내용 지우기
+
+                        var result = this.responseText;
+                        // 선택한 type, area 데이터 찾아서 넣기
+                        $(result).find('item').each(function() {
+                            $('#content').append('<h3>' + $(this).find('title').text() + '</h3>');
+                            $('#content').append('<p>' + $(this).find('addr1').text() + '</p>');
+                            $('#content').append('<image src = "' + $(this).find('firstimage').text() + '" </image>');
+                        });
+                    }
+                };
+                xmlhttp.open("GET", url);
+                xmlhttp.send();
+            }
+        </script>
+
+        <style>
+            select {
+                display: block;
+                margin: 0 auto;
+                padding: 5px;
+                border: 0;
+                border-bottom: 2px solid #8E44AD;
+                font-size: 15px;
+                width: 300px;
+                padding: .8em .5em;
+                font-size: 20px;
+                background: url("imgs/down_arrow.png") no-repeat 95% 50%;
+                border-radius: 0px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            div { 
+                margin-left: 15px;
+                font-size: large;
+                }
+            image{ width: 49%; }
+            h2 { text-align: center; margin: 2%; }
+        </style>
+    </head>
+
+    <body>
+        <h2>한국 지역별 관광 정보</h2>
+
+        <select id="type" onchange="selectOption()">
+            <option selected disabled hidden>관광타입</option>
+            <option value="12">관광지</option>
+            <option value="14">문화시설</option>
+            <option value="15">축제공연행사</option>
+            <option value="25">여행코스</option>
+            <option value="28">레포츠</option>
+            <option value="32">숙박</option>
+            <option value="38">쇼핑</option>
+            <option value="39">음식점</option>
+        </select>
+
+        <select id="area" onchange="selectOption()">
+            <option selected disabled hidden>지역</option>
+            <option value='1'>서울</option>
+            <option value='2'>인천</option>
+            <option value='3'>대전</option>
+            <option value='4'>대구</option>
+            <option value='5'>광주</option>
+            <option value='6'>부산</option>
+            <option value='7'>울산</option>
+            <option value='8'>세종특별자치시</option>
+            <option value='31'>경기도</option>
+            <option value='32'>강원도</option>
+            <option value='33'>충청북도</option>
+            <option value='34'>충청남도</option>
+            <option value='35'>경상북도</option>
+            <option value='36'>경상남도</option>
+            <option value='37'>전라북도</option>
+            <option value='38'>전라남도</option>
+            <option value='39'>제주도</option>
+        </select>
+
+        <div id="content"></div>
+    </body>
+</html>

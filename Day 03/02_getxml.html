@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <title>Get XML</title>
+        <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+        <script>
+            $(document).ready(function() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var result = this.responseText;
+                        var date = $(result).find("lastBuildDate").text();
+                        $("#date").html("<h1>" + date + "</h1>");
+                        $("#content").html(result + "<br></br>");
+                    }
+                };
+                xmlhttp.open("GET","http://www.chosun.com/site/data/rss/rss.xml");
+                xmlhttp.send();
+            });
+        </script>
+    </head>
+
+    <body>
+        <div id="date"></div>
+        <div id="content"></div>
+    </body>
+</html>
