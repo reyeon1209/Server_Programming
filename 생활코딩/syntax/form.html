@@ -1,0 +1,12 @@
+<!-- 입력한 정보들을 action에 있는 주소(서버)로 전송 -->
+<!-- get방식 : 서버로부터 사용자가 데이터를 가져올 때, method="get" 또는 생략 -->
+<!-- post방식 : 서버의 데이터를 수정/삭제/생성할 때, method="post" -->
+<form action="http://localhost:3000/process_create" method="post">
+    <p><input type="text" name="title"></p>
+    <p>
+        <textarea name="description"></textarea>
+    </p>
+    <p>
+        <input type="submit">
+    </p>
+</form>
