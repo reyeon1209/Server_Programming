@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/web-n/Nodejs#readme",
   "dependencies": {
+    "mysql": "^2.18.1",
     "sanitize-html": "^1.18.2"
   }
 }
