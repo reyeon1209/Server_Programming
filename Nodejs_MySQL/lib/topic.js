@@ -2,6 +2,7 @@ var url = require('url');
 var qs = require('querystring');
 var template = require('./template.js');
 var db = require('./db.js');
+var sanitizeHTML = require('sanitize-html');
 
 exports.home = function(request, response) {
     db.query(`SELECT * FROM topic`, function (error, topics) {
@@ -31,7 +32,8 @@ exports.page = function(request, response) {
           throw error;
         }
 
-        db.query(`SELECT * FROM topic LEFT JOIN author ON topic.author_id = author.id WHERE topic.id=?`,[queryData.id], function(error2, topic){
+        // db.query(`SELECT * FROM topic LEFT JOIN author ON topic.author_id = author.id WHERE topic.id=${db.escape(queryData.id)}`, function(error2, topic){
+        db.query(`SELECT * FROM topic LEFT JOIN author ON topic.author_id = author.id WHERE topic.id=?`, [queryData.id], function(error2, topic){
             if (error2) {
                 throw error2;
             }
@@ -41,9 +43,9 @@ exports.page = function(request, response) {
             var list = template.list(topics);
             var html = template.HTML(title, list,
             `
-                <h2>${title}</h2>
-                ${description}
-                <p>by ${topic[0].name}</p>
+                <h2>${sanitizeHTML(title)}</h2>
+                ${sanitizeHTML(description)}
+                <p>by ${sanitizeHTML(topic[0].name)}</p>
             `,
             `
                 <a href="/create">create</a>
@@ -74,7 +76,7 @@ exports.create = function(request, response) {
 
             var title = 'Create';
             var list = template.list(topics);
-            var html = template.HTML(title, list,
+            var html = template.HTML(sanitizeHTML(title), list,
             `
                 <form action="/create_process" method="post">
                     <p><input type="text" name="title" placeholder="title"></p>
@@ -143,13 +145,13 @@ exports.update = function(request, response) {
                 }
 
                 var list = template.list(topics);
-                var html = template.HTML(topic[0].title, list,
+                var html = template.HTML(sanitizeHTML(topic[0].title), list,
                 `
                     <form action="/update_process" method="post">
                         <input type="hidden" name="id" value="${topic[0].id}">
-                        <p><input type="text" name="title" placeholder="title" value="${topic[0].title}"></p>
+                        <p><input type="text" name="title" placeholder="title" value="${sanitizeHTML(topic[0].title)}"></p>
                         <p>
-                            <textarea name="description" placeholder="description">${topic[0].description}</textarea>
+                            <textarea name="description" placeholder="description">${sanitizeHTML(topic[0].description)}</textarea>
                         </p>
                         <p>
                             ${template.authorSelect(authors, topic[0].author_id)}

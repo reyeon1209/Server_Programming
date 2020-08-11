@@ -2,6 +2,7 @@ var url = require('url');
 var qs = require('querystring');
 var template = require('./template.js');
 var db = require('./db.js');
+var sanitizeHTML = require('sanitize-html');
 
 exports.home = function(request, response) {
     db.query(`SELECT * FROM topic`, function (error, topics) {
@@ -14,7 +15,7 @@ exports.home = function(request, response) {
                 throw error2;
             }
 
-            var title = 'authore';
+            var title = 'author';
             var list = template.list(topics);
             var html = template.HTML(title, list,
                 `
@@ -110,10 +111,10 @@ exports.update = function(request, response) {
                                 <input type="hidden" name="id", value="${queryData.id}">
                             </p>
                             <p>
-                            <input type="text" name="name" value="${author[0].name}" placeholder="name">
+                            <input type="text" name="name" value="${sanitizeHTML(author[0].name)}" placeholder="name">
                             </p>
                             <p>
-                            <textarea name="profile" placeholder="description">${author[0].profile}</textarea>
+                            <textarea name="profile" placeholder="description">${sanitizeHTML(author[0].profile)}</textarea>
                             </p>
                             <p>
                                 <input type="submit">
