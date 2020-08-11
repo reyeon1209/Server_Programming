@@ -77,16 +77,16 @@ exports.create = function(request, response) {
             var html = template.HTML(title, list,
             `
                 <form action="/create_process" method="post">
-                <p><input type="text" name="title" placeholder="title"></p>
-                <p>
-                    <textarea name="description" placeholder="description"></textarea>
-                </p>
-                <p>
-                    ${template.authorSelect(authors)}
-                </p>
-                <p>
-                    <input type="submit">
-                </p>
+                    <p><input type="text" name="title" placeholder="title"></p>
+                    <p>
+                        <textarea name="description" placeholder="description"></textarea>
+                    </p>
+                    <p>
+                        ${template.authorSelect(authors)}
+                    </p>
+                    <p>
+                        <input type="submit">
+                    </p>
                 </form>
              `,
             `
