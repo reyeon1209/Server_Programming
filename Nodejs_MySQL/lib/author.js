@@ -60,7 +60,7 @@ exports.create_process = function(request, response) {
 
         db.query(`INSERT INTO author (name, profile) VALUES(?, ?)`,
         [post.name, post.profile]
-        , function (error, topic) {
+        , function (error, result) {
             if (error) {
                 throw error;
             }
@@ -140,13 +140,39 @@ exports.update_process = function(request, response) {
 
         db.query(`UPDATE author SET name=?, profile=? WHERE id=?`,
         [post.name, post.profile, post.id]
-        , function (error, topic) {
+        , function (error, result) {
             if (error) {
                 throw error;
             }
 
             response.writeHead(302, {Location: `/author`});
             response.end();
+        });
+    });
+}
+
+exports.delete_process = function(request, response) {
+    var body = '';
+
+    request.on('data', function(data){
+        body = body + data;
+    });
+
+    request.on('end', function(){
+        var post = qs.parse(body);
+        db.query(`DELETE FROM topic WHERE author_id=?`, [post.id], function (error1, result1) {
+            if (error1) {
+                throw error1;
+            }
+  
+            db.query(`DELETE FROM author WHERE id=?`, [post.id], function (error2, result) {
+                if (error2) {
+                    throw error2;
+                }
+
+                response.writeHead(302, {Location: `/author`});
+                response.end();
+            });
         });
     });
 }
