@@ -3,15 +3,16 @@ const app = express()
 const port = 3000
 
 const fs = require('fs');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser') // Third-party middleware
 const template = require('./lib/template.js');
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
-const compression = require('compression')
+const compression = require('compression')  // Third-party middleware
 
+app.use(express.static('public')) // pyblic 디렉토리 안에서 static을 찾겠다
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(compression())
-app.get('*', function(request, response, next) { 
+app.get('*', function(request, response, next) { // Application-level middleware
   // 'get'방식으로 들어오는 '*'모든 요청에 대해서 파일 목록을 가져오는 middleware
   fs.readdir('./data', function(error, filelist){
     request.list = filelist;
@@ -25,7 +26,10 @@ app.get('/', (request, response) => {
   var description = 'Hello, Node.js';
   var list = template.list(request.list);
   var html = template.HTML(title, list,
-    `<h2>${title}</h2>${description}`,
+    `
+    <h2>${title}</h2>${description}
+    <img src="/images/hello.jpg" style="width:300px; display:block; margin-top:10px;">
+    `,
     `<a href="/create">create</a>`
   );
 
