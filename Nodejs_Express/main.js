@@ -2,12 +2,14 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const fs = require('fs');
-const bodyParser = require('body-parser') // Third-party middleware
-const compression = require('compression') // Third-party middleware
-const indexRouter = require('./routes/index.js');
-const topicRouter = require('./routes/topic.js');
+var fs = require('fs');
+var bodyParser = require('body-parser') // Third-party middleware
+var compression = require('compression') // Third-party middleware
+var indexRouter = require('./routes/index.js');
+var topicRouter = require('./routes/topic.js');
+var helmet = require('helmet');
 
+app.use(helmet());
 app.use(express.static('public')) // pyblic 디렉토리 안에서 static을 찾겠다
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(compression())

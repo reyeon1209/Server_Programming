@@ -1,10 +1,10 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 
-const fs = require('fs');
-const template = require('../lib/template.js');
-const path = require('path');
-const sanitizeHtml = require('sanitize-html');
+var fs = require('fs');
+var template = require('../lib/template.js');
+var path = require('path');
+var sanitizeHtml = require('sanitize-html');
 
 router.get('/create', function(request, response){
     var title = 'WEB - create';
