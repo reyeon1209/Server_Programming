@@ -5,6 +5,32 @@ var qs = require('querystring');
 var template = require('./lib/template.js')
 var path = require('path');
 var sanitizeHtml = require('sanitize-html');
+var cookie = require('cookie');
+
+function authIsOwner(request, response) {
+  var isOwner = false;
+  var cookies = {};
+  
+  if (request.headers.cookie) {
+    cookies = cookie.parse(request.headers.cookie);
+  }
+
+  if (cookies.email === 'email@naver.com' && cookies.password === '1111') {
+    isOwner = true;
+  }
+
+  return isOwner;
+}
+
+function authStatusUI(request, response) {
+  var authStatusUI = '<a href="/login">login</a>';
+
+  if (authIsOwner(request, response)) {
+    authStatusUI = '<a href="/logout_process">logout</a>';
+  }
+  
+  return authStatusUI;
+}
 
 var app = http.createServer(function(request,response) {  // request : 요청할 때 정보들, response : 응답할 때 정보들
     var _url = request.url;
@@ -17,7 +43,10 @@ var app = http.createServer(function(request,response) {  // request : 요청할
             var title = 'Welcome';
             var description = 'Hello, Node.js';
             var list = template.list(filelist);
-            var html = template.HTML(title, list, `<h2>${title}</h2>${description}`, `<a href="/create">create</a>`);
+            var html = template.HTML(title, list,
+              `<h2>${title}</h2>${description}`,
+              `<a href="/create">create</a>`,
+              authStatusUI(request, response));
 
             response.writeHead(200);  // 200 : 파일을 성공적으로 전송
             response.end(html);
@@ -40,7 +69,7 @@ var app = http.createServer(function(request,response) {  // request : 요청할
                 <input type="hidden" name="id" value="${sanitizedTitle}">
                 <input type="submit" value="delete">
               </form>
-            `);
+            `, authStatusUI(request, response));
 
             response.writeHead(200);  // 200 : 파일을 성공적으로 전송
             response.end(html);
@@ -48,25 +77,30 @@ var app = http.createServer(function(request,response) {  // request : 요청할
         });
       }
     } else if (pathname === '/create') {
-        fs.readdir('./data', (error, filelist) => {
-          var title = 'WEB - create';
-          var list = template.list(filelist);
-          var html = template.HTML(title, list,
-            `
-              <form action="/create_process" method="post">
-                <p><input type="text" name="title" placeholder="title"></p>
-                <p>
-                    <textarea name="description" placeholder="description"></textarea>
-                </p>
-                <p>
-                    <input type="submit">
-                </p>
-              </form>
-            `, '');
+      if (authIsOwner(request, response) === false) {
+        response.end('Login required!!');
+        return false;
+      }
 
-          response.writeHead(200);  // 200 : 파일을 성공적으로 전송
-          response.end(html);
-        });
+      fs.readdir('./data', (error, filelist) => {
+        var title = 'WEB - create';
+        var list = template.list(filelist);
+        var html = template.HTML(title, list,
+          `
+            <form action="/create_process" method="post">
+              <p><input type="text" name="title" placeholder="title"></p>
+              <p>
+                  <textarea name="description" placeholder="description"></textarea>
+              </p>
+              <p>
+                  <input type="submit">
+              </p>
+            </form>
+          `, '', authStatusUI(request, response));
+
+        response.writeHead(200);  // 200 : 파일을 성공적으로 전송
+        response.end(html);
+      });
     } else if (pathname === '/create_process') {
       var body = '';
       request.on('data', function(data) {
@@ -87,6 +121,11 @@ var app = http.createServer(function(request,response) {  // request : 요청할
         });
       });
     } else if (pathname === '/update') {
+      if (authIsOwner(request, response) === false) {
+        response.end('Login required!!');
+        return false;
+      }
+
       fs.readdir('./data', (error, filelist) => {
         var filteredId = path.parse(queryData.id).base;
         fs.readFile(`data/${filteredId}`, 'utf8', (err, description) =>  {
@@ -104,7 +143,9 @@ var app = http.createServer(function(request,response) {  // request : 요청할
                   <input type="submit">
               </p>
             </form>
-          `, `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
+          `,
+          `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`,
+          authStatusUI(request, response));
 
         response.writeHead(200);  // 200 : 파일을 성공적으로 전송
         response.end(html);
@@ -131,6 +172,11 @@ var app = http.createServer(function(request,response) {  // request : 요청할
       });
     });
   } else if (pathname === '/delete_process') {
+    if (authIsOwner(request, response) === false) {
+      response.end('Login required!!');
+      return false;
+    }
+
     var body = '';
     request.on('data', function(data) {
       body = body + data;
@@ -146,7 +192,71 @@ var app = http.createServer(function(request,response) {  // request : 요청할
         response.writeHead(302, {Location: `/`});
         response.end();
       })
-  });
+    });
+  } else if (pathname === '/login') {
+    fs.readdir('./data', (error, filelist) => {
+      var title = 'Login';
+      var list = template.list(filelist);
+      var html = template.HTML(title, list,
+        `
+        <form action="login_process" method="post">
+          <p><input type="text" name="email" placeholder="email"></p>
+          <p><input type="password" name="password" placeholder="password"></p>
+          <p><input type="submit"></p>
+        </form>
+        `,
+        `<a href="/create">create</a>`);
+
+      response.writeHead(200);  // 200 : 파일을 성공적으로 전송
+      response.end(html);
+    });
+  } else if (pathname === '/login_process') {
+    var body = '';
+    request.on('data', function(data) {
+      body = body + data;
+      if (body.length > 1e6) {
+        request.connection.destroy(); // 너무 많을 경우 연결 끊음
+      }
+    });
+    request.on('end', function() {
+      var post = qs.parse(body);
+      if (post.email === 'email@naver.com' && post.password === '1111') {
+        response.writeHead(302, {
+          'Set-Cookie': [
+            `email=${post.email}`,
+            `password=${post.password}`,
+            `nickname=JY`
+          ],
+          Location: `/`});
+        response.end();
+      } else {
+        response.end('Who?');
+      }
+    });
+  } else if (pathname === '/logout_process') {
+    if (authIsOwner(request, response) === false) {
+      response.end('Login required!!');
+      return false;
+    }
+    
+    var body = '';
+    request.on('data', function(data) {
+      body = body + data;
+      if (body.length > 1e6) {
+        request.connection.destroy(); // 너무 많을 경우 연결 끊음
+      }
+    });
+    request.on('end', function() {
+      var post = qs.parse(body);
+      response.writeHead(302, {
+        'Set-Cookie': [
+          `email=; Max-Age=0`,  // 삭제
+          `password=; Max-Age=0`,
+          `nickname=; Max-Age=0`
+        ],
+        Location: `/`});
+      response.end();
+    });
   } else {
       response.writeHead(404);  // 404 : 파일을 찾을 수 없음
       response.end('Not found');
