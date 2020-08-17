@@ -28,7 +28,8 @@
     "express-session": "^1.17.1",
     "helmet": "^4.1.0",
     "mysql": "^2.18.1",
-    "sanitize-html": "^1.18.2"
+    "sanitize-html": "^1.18.2",
+    "session-file-store": "^1.4.0"
   },
   "devDependencies": {
     "eslint": "^7.7.0"

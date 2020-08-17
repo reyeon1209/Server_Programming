@@ -1,13 +1,15 @@
 var express = require('express')
 var parseurl = require('parseurl')
 var session = require('express-session')
+var FileStore = require('session-file-store')(session);
   
 var app = express()
   
 app.use(session({
     secret: 'keyboard cat',   // 별도의 파일로 분리 후 버전 관리
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: new FileStore()
 }))
   
 app.get('/', function (req, res, next) {
