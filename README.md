@@ -8,4 +8,5 @@
 
 <p align="center">
   Sejong University Server Programming in 2020
+  생활코딩 WEB2 - Node.js 강의
 </p>
