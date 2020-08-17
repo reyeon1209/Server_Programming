@@ -8,7 +8,12 @@ http.createServer(function(request, response) {
     }
     console.log(cookies);
     response.writeHead(200, {
-        'Set-Cookie': ['yummy_cookie=choco', 'tasty_cookie=strawberry']
+        'Set-Cookie': [
+            'yummy_cookie=choco',
+            'tasty_cookie=strawberry',
+            `Permanent=cookies; Max-Age=${60*60*24*30}`
+            // Expires : 쿠키가 언제 만료될 것인가(절대적), Max-Age : 쿠키가 얼마나 유지될 것인가 (상대적)
+        ]
     })
     response.end('Cookie!!');
 }).listen(3000);
